@@ -2,16 +2,30 @@
   <head>
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="jquery.html5fixes.js"></script>
+    <script type="text/javascript" src="jquery.diff.min.js"></script>
     <script type="text/javascript">
-        alert(
-          "'click' support is: " + $.eventSupported('click') + "\n" +
-          "'unload' support is: " + $.eventSupported('unload') + "\n" +
-          "'input' support is: " + $.eventSupported('input') + "\n" +
-          "'fakeevent' support is: " + $.eventSupported('fakeevent')
+        $(document).bind(
+            'ready',
+            function(readyevt) {
+                $('input').bind(
+                    'input',
+                    function(inputevt,difference) {
+                        $('div#output').append("input<br/>");
+                    }
+                )
+            }
         );
     </script>
   </head>
   
-  <body>
+  <body> 
+    <form name="fiddle">
+      <div>
+        <input type="number" name="hello" value="" />
+        <input type="number" name="world" />
+      </div>
+    </form>
+    <div id="output">
+    </div>
   </body>
 </html>

@@ -1,4 +1,7 @@
-;(function($) {
+; // End any previous JS input
+
+// Add eventSupported() function to attempt to check if an event is currently supported
+(function($) {
     var supported = {}; // results
     // Specify which elements should allow which events
     var tagnames = {
@@ -43,4 +46,40 @@
         // We're done. Return the value 
         return supported[eventName];
     }
+})(jQuery);
+
+// Create "input" event for browsers that don't support it.
+(function($) {
+    // Fix "input" event:
+    $(document).bind(
+        'ready',
+        function(readyevt) {
+            // If the "input" event is already supported, no need...
+            if($.eventSupported('input')) {return false;}
+            
+            // Otherwise, simulate the "input" event on all "input" elements
+            $('input').each(
+                function() {
+                    // Record the value of each "input" element
+                    $(this).data('origVal',$(this).val());
+                    
+                    // Attempt to detect any event which might possible change the content of input elements
+                    $(this).bind(
+                        'change keydown keyup mousedown mouseup paste',
+                        function(inputactionevt) {
+                            // Check if value has been changed
+                            if($(this).val() != $(this).data('origVal')) {
+                                // Fire the "input" event
+                                $(this).trigger('input', [$.diff($(this).data('origVal'),$(this).val())]);
+                                // Fire the "forminput" event
+                                $(this).parents('form').trigger('forminput');
+                                // Update the 'original' value again
+                                $(this).data('origVal',$(this).val());
+                            }
+                        }
+                    );
+                }
+            );
+        }
+    );
 })(jQuery);
