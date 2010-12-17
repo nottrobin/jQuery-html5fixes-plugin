@@ -56,6 +56,24 @@
         function(readyevt) {
             // If the "input" event is already supported, no need...
             if($.eventSupported('input')) {return false;}
+            else if(typeof(document.createEvent) == 'function') {
+                // Try to detect use the last ditch method
+                $('body').append('<input id="testEl">');
+                var kevt = document.createEvent("KeyboardEvent");
+                kevt.initKeyEvent("keypress", true, true, window, false, false, false, false, 0, "kevt".charCodeAt(0));
+                $('body #testEl').data('supported',false);
+                $('body #testEl').bind(
+                    'input',
+                    function(ievt) {
+                        $(this).data('supported',true);
+                    }
+                );
+                $('body #testEl').focus();
+                $('body #testEl')[0].dispatchEvent(kevt);
+                var supported = $('body #testEl').data('supported');
+                $('body #testEl').remove();
+                if(supported == true) {return false;}
+            }
             
             // Otherwise, simulate the "input" event on all "input" elements
             $('input').each(
@@ -70,7 +88,7 @@
                             // Check if value has been changed
                             if($(this).val() != $(this).data('origVal')) {
                                 // Fire the "input" event
-                                $(this).trigger('input', [$.diff($(this).data('origVal'),$(this).val())]);
+                                $(this).trigger('input');
                                 // Fire the "forminput" event
                                 $(this).parents('form').trigger('forminput');
                                 // Update the 'original' value again

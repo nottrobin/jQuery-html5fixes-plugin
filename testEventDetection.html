@@ -2,7 +2,6 @@
   <head>
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="jquery.html5fixes.js"></script>
-    <script type="text/javascript" src="jquery.diff.min.js"></script>
     <script type="text/javascript">
         $(document).bind(
             'ready',
@@ -10,7 +9,7 @@
                 $('input').bind(
                     'input',
                     function(inputevt,difference) {
-                        $('div#output').append("input<br/>");
+                        $('div#output').append("fired ");
                     }
                 )
             }
@@ -21,8 +20,7 @@
   <body> 
     <form name="fiddle">
       <div>
-        <input type="number" name="hello" value="" />
-        <input type="number" name="world" />
+        <input type="number" name="hello" />
       </div>
     </form>
     <div id="output">
